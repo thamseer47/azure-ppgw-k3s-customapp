@@ -1,0 +1,28 @@
+                    +-----------------------------+
+                    |      Client Browser         |
+                    +--------------+--------------+
+                                   |
+                                   v
+                    +-----------------------------+
+                    |   Azure Application Gateway  |
+                    |      Public IP + WAF         |
+                    +-----------------------------+
+                                   |
+                      Health Probe | Routing Rule
+                                   v
+                    +-----------------------------+
+                    |   Backend Pool (VM Public IP)|
+                    +---------------+--------------+
+                                    |
+                                    v
+                            +---------------+
+                            | Ubuntu VM     |
+                            |  k3s Cluster  |
+                            +-------+-------+
+                                    |
+                      NodePort 30731|
+                                    v
+                        +--------------------+
+                        |  nginx Deployment  |
+                        | (Custom HTML page) |
+                        +--------------------+
