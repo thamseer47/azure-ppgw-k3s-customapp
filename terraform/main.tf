@@ -135,7 +135,7 @@ resource "azurerm_application_gateway" "appgw" {
 
   autoscale_configuration {
     min_capacity = 1
-    max_capacity = 1
+    max_capacity = 2
   }
 
   gateway_ip_configuration {
