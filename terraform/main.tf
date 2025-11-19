@@ -93,6 +93,12 @@ resource "azurerm_linux_virtual_machine" "vm" {
     public_key = file(var.ssh_key_path)
   }
 
+  os_disk {
+    name                 = "osdisk"
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
@@ -144,10 +150,8 @@ resource "azurerm_application_gateway" "appgw" {
   }
 
   backend_address_pool {
-    name = "backendpool"
-    backend_addresses {
-      ip_address = azurerm_public_ip.vm_ip.ip_address
-    }
+    name         = "backendpool"
+    ip_addresses = [azurerm_public_ip.vm_ip.ip_address]
   }
 
   backend_http_settings {
