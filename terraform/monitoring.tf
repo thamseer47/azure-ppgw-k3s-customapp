@@ -2,15 +2,15 @@
 # Log Analytics Workspace
 ############################################################
 resource "azurerm_log_analytics_workspace" "law" {
-  name                = "${var.prefix}-law"
+  name                = "app-law"
   location            = var.location
-  resource_group_name = var.resource_group_app_name
+  resource_group_name = azurerm_resource_group.app.name
   sku                 = "PerGB2018"
   retention_in_days   = 30
 }
 
 ############################################################
-# App Gateway Diagnostics
+# App Gateway Diagnostics → Send logs to LAW
 ############################################################
 resource "azurerm_monitor_diagnostic_setting" "appgw_diag" {
   name                       = "appgw-diag"
@@ -37,3 +37,4 @@ resource "azurerm_monitor_diagnostic_setting" "appgw_diag" {
     enabled  = true
   }
 }
+
