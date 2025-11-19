@@ -52,7 +52,7 @@ resource "azurerm_public_ip" "vm_ip" {
   resource_group_name = azurerm_resource_group.app.name
   location            = var.location
   allocation_method   = "Static"
-  sku                 = "Basic"
+  sku                 = "Standard"
 }
 
 ##############################
