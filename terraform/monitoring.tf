@@ -8,43 +8,40 @@ resource "azurerm_log_analytics_workspace" "law" {
   sku                 = "PerGB2018"
   retention_in_days   = 30
 }
-
-############################################################
-# App Gateway Diagnostics → Send logs to LAW
-############################################################
 resource "azurerm_monitor_diagnostic_setting" "appgw_diag" {
-  name                       = "appgw-diag"
+  name                       = "${var.prefix}-appgw-diag"
   target_resource_id         = azurerm_application_gateway.appgw.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 
   enabled_log {
-  category = "ApplicationGatewayAccessLog"
+    category = "ApplicationGatewayAccessLog"
 
-  retention_policy {
-    enabled = false
+    retention_policy {
+      enabled = false
+    }
   }
-}
 
-enabled_log {
-  category = "ApplicationGatewayPerformanceLog"
+  enabled_log {
+    category = "ApplicationGatewayPerformanceLog"
 
-  retention_policy {
-    enabled = false
+    retention_policy {
+      enabled = false
+    }
   }
-}
 
-enabled_log {
-  category = "ApplicationGatewayFirewallLog"
+  enabled_log {
+    category = "ApplicationGatewayFirewallLog"
 
-  retention_policy {
-    enabled = false
+    retention_policy {
+      enabled = false
+    }
   }
-}
 
-metric {
-  category = "AllMetrics"
+  metric {
+    category = "AllMetrics"
 
-  retention_policy {
-    enabled = false
+    retention_policy {
+      enabled = false
+    }
   }
 }
