@@ -1,4 +1,3 @@
-# Azure App Gateway + VM + k3s Project
 ##############################
 # Resource Groups
 ##############################
@@ -114,7 +113,7 @@ resource "azurerm_public_ip" "appgw_ip" {
 }
 
 ##############################
-# Application Gateway v2
+# Application Gateway v2 + WAF
 ##############################
 
 resource "azurerm_application_gateway" "appgw" {
@@ -126,6 +125,11 @@ resource "azurerm_application_gateway" "appgw" {
     name     = "WAF_v2"
     tier     = "WAF_v2"
     capacity = 1
+  }
+
+  autoscale_configuration {
+    min_capacity = 1
+    max_capacity = 1
   }
 
   gateway_ip_configuration {
@@ -152,10 +156,20 @@ resource "azurerm_application_gateway" "appgw" {
 
   backend_http_settings {
     name                  = "http-settings"
-    cookie_based_affinity = "Disabled"
-    port                  = 30300
+    port                  = 30080          # CHANGE if your NodePort is 30300
     protocol              = "Http"
+    cookie_based_affinity = "Disabled"
     request_timeout       = 30
+  }
+
+  probe {
+    name                = "k3s-probe"
+    protocol            = "Http"
+    path                = "/"
+    port                = 30080
+    interval            = 30
+    timeout             = 30
+    unhealthy_threshold = 3
   }
 
   http_listener {
@@ -171,5 +185,18 @@ resource "azurerm_application_gateway" "appgw" {
     http_listener_name         = "listener"
     backend_address_pool_name  = "backendpool"
     backend_http_settings_name = "http-settings"
+    priority                   = 1     # REQUIRED by Azure API
   }
+
+  waf_configuration {
+    enabled          = true
+    firewall_mode    = "Detection"
+    rule_set_type    = "OWASP"
+    rule_set_version = "3.2"
+  }
+
+  depends_on = [
+    azurerm_public_ip.appgw_ip,
+    azurerm_public_ip.vm_ip
+  ]
 }
