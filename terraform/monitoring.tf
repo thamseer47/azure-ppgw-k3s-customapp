@@ -17,24 +17,34 @@ resource "azurerm_monitor_diagnostic_setting" "appgw_diag" {
   target_resource_id         = azurerm_application_gateway.appgw.id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
 
-  log {
-    category = "ApplicationGatewayAccessLog"
-    enabled  = true
-  }
+  enabled_log {
+  category = "ApplicationGatewayAccessLog"
 
-  log {
-    category = "ApplicationGatewayPerformanceLog"
-    enabled  = true
-  }
-
-  log {
-    category = "ApplicationGatewayFirewallLog"
-    enabled  = true
-  }
-
-  metric {
-    category = "AllMetrics"
-    enabled  = true
+  retention_policy {
+    enabled = false
   }
 }
 
+enabled_log {
+  category = "ApplicationGatewayPerformanceLog"
+
+  retention_policy {
+    enabled = false
+  }
+}
+
+enabled_log {
+  category = "ApplicationGatewayFirewallLog"
+
+  retention_policy {
+    enabled = false
+  }
+}
+
+metric {
+  category = "AllMetrics"
+
+  retention_policy {
+    enabled = false
+  }
+}
