@@ -15,3 +15,9 @@ variable "ssh_key_path" {
   type        = string
   default     = "~/.ssh/id_rsa.pub"
 }
+
+variable "prefix" {
+  type    = string
+  default = "app"
+}
+
