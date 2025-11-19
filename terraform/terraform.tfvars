@@ -1,8 +1,3 @@
-output "vm_public_ip" {
-  value = azurerm_public_ip.vm_ip.ip_address
-}
-
-output "app_gateway_public_ip" {
-  value = azurerm_public_ip.appgw_ip.ip_address
-}
-
+location     = "East US"
+vm_admin     = "azureuser"
+ssh_key_path = "C:/Users/thams/.ssh/id_rsa.pub"
