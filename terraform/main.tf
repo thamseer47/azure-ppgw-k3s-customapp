@@ -159,11 +159,13 @@ resource "azurerm_application_gateway" "appgw" {
   }
 
   backend_http_settings {
-    name                  = "http-settings"
-    port                  = 30080          # CHANGE if your NodePort is 30300
-    protocol              = "Http"
-    cookie_based_affinity = "Disabled"
-    request_timeout       = 30
+  name                  = "http-settings"
+  cookie_based_affinity = "Disabled"
+  port                  = 30300
+  protocol              = "Http"
+  request_timeout       = 30
+  pick_host_name_from_backend_address = true
+
   }
 
   probe {
