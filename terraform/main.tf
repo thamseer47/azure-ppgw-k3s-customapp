@@ -43,7 +43,7 @@ resource "azurerm_subnet" "subnet_vm" {
 }
 
 ##############################
-# VM Public IP
+# Public IP for VM (Standard)
 ##############################
 
 resource "azurerm_public_ip" "vm_ip" {
@@ -72,7 +72,7 @@ resource "azurerm_network_interface" "nic" {
 }
 
 ##############################
-# Linux VM (Ubuntu)
+# Linux VM (Ubuntu 22.04 + k3s capable)
 ##############################
 
 resource "azurerm_linux_virtual_machine" "vm" {
@@ -93,7 +93,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   os_disk {
-    name                 = "osdisk"
+    name                 = "osdisk-k3s"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
@@ -155,25 +155,25 @@ resource "azurerm_application_gateway" "appgw" {
 
   backend_address_pool {
     name         = "backendpool"
-    ip_addresses = [azurerm_public_ip.vm_ip.ip_address]
+    ip_addresses = [azurerm_network_interface.nic.private_ip_address]
   }
 
   backend_http_settings {
-  name                  = "http-settings"
-  cookie_based_affinity = "Disabled"
-  port                  = 30300
-  protocol              = "Http"
-  request_timeout       = 30
-  pick_host_name_from_backend_address = true
-
+    name                           = "http-settings"
+    cookie_based_affinity          = "Disabled"
+    port                           = 30080     # FIXED
+    protocol                       = "Http"
+    request_timeout                = 30
+    pick_host_name_from_backend_address = false
+    probe_name                     = "k3s-probe"
   }
 
   probe {
     name                = "k3s-probe"
     protocol            = "Http"
     path                = "/"
-    port                = 30080
     interval            = 30
+    port                = 30080
     timeout             = 30
     unhealthy_threshold = 3
   }
@@ -191,7 +191,7 @@ resource "azurerm_application_gateway" "appgw" {
     http_listener_name         = "listener"
     backend_address_pool_name  = "backendpool"
     backend_http_settings_name = "http-settings"
-    priority                   = 1     # REQUIRED by Azure API
+    priority                   = 1
   }
 
   waf_configuration {
@@ -203,6 +203,6 @@ resource "azurerm_application_gateway" "appgw" {
 
   depends_on = [
     azurerm_public_ip.appgw_ip,
-    azurerm_public_ip.vm_ip
+    azurerm_linux_virtual_machine.vm
   ]
 }
