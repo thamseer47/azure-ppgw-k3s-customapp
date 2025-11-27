@@ -1,21 +1,6 @@
-terraform {
-  required_version = ">= 1.6"
-
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.0"
-    }
-  }
-}
-
-provider "azurerm" {
-  features {}
-}
-
-##########################################
+##############################
 # Resource Groups
-##########################################
+##############################
 
 resource "azurerm_resource_group" "network" {
   name     = "rg-network"
@@ -32,9 +17,9 @@ resource "azurerm_resource_group" "appgw" {
   location = var.location
 }
 
-##########################################
+##############################
 # Virtual Network + Subnets
-##########################################
+##############################
 
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-app"
@@ -57,9 +42,9 @@ resource "azurerm_subnet" "subnet_vm" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-##########################################
+##############################
 # Public IP for VM
-##########################################
+##############################
 
 resource "azurerm_public_ip" "vm_ip" {
   name                = "vm-public-ip"
@@ -69,9 +54,9 @@ resource "azurerm_public_ip" "vm_ip" {
   sku                 = "Standard"
 }
 
-##########################################
+##############################
 # Network Interface for VM
-##########################################
+##############################
 
 resource "azurerm_network_interface" "nic" {
   name                = "nic-vm"
@@ -86,21 +71,19 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-##########################################
-# Linux VM (Ubuntu 22.04)
-##########################################
+##############################
+# Linux VM (Ubuntu + k3s capable)
+##############################
 
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-k3s"
-  resource_group_name = azurerm_resource_group.app.name
   location            = var.location
+  resource_group_name = azurerm_resource_group.app.name
   size                = "Standard_B1s"
 
-  admin_username = var.vm_admin
+  network_interface_ids = [azurerm_network_interface.nic.id]
 
-  network_interface_ids = [
-    azurerm_network_interface.nic.id
-  ]
+  admin_username = var.vm_admin
 
   admin_ssh_key {
     username   = var.vm_admin
@@ -121,21 +104,21 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-##########################################
+##############################
 # Public IP for Application Gateway
-##########################################
+##############################
 
 resource "azurerm_public_ip" "appgw_ip" {
   name                = "appgw-public-ip"
-  resource_group_name = azurerm_resource_group.appgw.name
   location            = var.location
+  resource_group_name = azurerm_resource_group.appgw.name
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
-##########################################
-# Application Gateway (WAF_v2)
-##########################################
+##############################
+# Application Gateway v2 + WAF
+##############################
 
 resource "azurerm_application_gateway" "appgw" {
   name                = "appgw-k3s"
@@ -168,21 +151,18 @@ resource "azurerm_application_gateway" "appgw" {
     public_ip_address_id = azurerm_public_ip.appgw_ip.id
   }
 
-  ####################################
-  # Backend: VM Private IP (correct)
-  ####################################
   backend_address_pool {
     name         = "backendpool"
     ip_addresses = [azurerm_network_interface.nic.private_ip_address]
   }
 
   backend_http_settings {
-    name                  = "http-settings"
-    port                  = 30080
-    protocol              = "Http"
-    cookie_based_affinity = "Disabled"
-    request_timeout       = 30
-    probe_name            = "k3s-probe"
+    name                           = "http-settings"
+    cookie_based_affinity          = "Disabled"
+    port                           = 30080
+    protocol                       = "Http"
+    request_timeout                = 30
+    probe_name                     = "k3s-probe"
   }
 
   probe {
@@ -219,6 +199,7 @@ resource "azurerm_application_gateway" "appgw" {
   }
 
   depends_on = [
+    azurerm_public_ip.appgw_ip,
     azurerm_linux_virtual_machine.vm
   ]
 }
