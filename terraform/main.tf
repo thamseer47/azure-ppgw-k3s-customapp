@@ -164,7 +164,7 @@ resource "azurerm_application_gateway" "appgw" {
     port                                = 30080
     protocol                            = "Http"
     request_timeout                     = 30
-    pick_host_name_from_backend_http_settings = true
+    pick_host_name_from_backend_address = true
     probe_name                          = "k3s-probe"
   }
 
