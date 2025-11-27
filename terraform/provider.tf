@@ -8,7 +8,7 @@ terraform {
     }
   }
 
-  backend "local" {}  # You can switch to Azure storage backend later
+  backend "local" {} # You can switch to Azure storage backend later
 }
 
 provider "azurerm" {
