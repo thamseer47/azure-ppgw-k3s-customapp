@@ -1,6 +1,25 @@
-##############################
+##########################################
+# Provider
+##########################################
+
+terraform {
+  required_version = ">= 1.6"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+}
+
+##########################################
 # Resource Groups
-##############################
+##########################################
 
 resource "azurerm_resource_group" "network" {
   name     = "rg-network"
@@ -17,24 +36,46 @@ resource "azurerm_resource_group" "appgw" {
   location = var.location
 }
 
-##############################
-# EXISTING RESOURCES (IMPORTED)
-# DO NOT CREATE AGAIN
-##############################
+##########################################
+# Virtual Network + Subnets
+##########################################
 
-# resource "azurerm_virtual_network" "vnet" {
-#   ...
-# }
+resource "azurerm_virtual_network" "vnet" {
+  name                = "vnet-app"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.network.name
+  address_space       = ["10.0.0.0/16"]
+}
 
-# resource "azurerm_subnet" "subnet_appgw" { ... }
-# resource "azurerm_subnet" "subnet_vm" { ... }
+resource "azurerm_subnet" "subnet_appgw" {
+  name                 = "snet-appgw"
+  resource_group_name  = azurerm_resource_group.network.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
 
-# resource "azurerm_public_ip" "vm_ip" { ... }
-# resource "azurerm_public_ip" "appgw_ip" { ... }
+resource "azurerm_subnet" "subnet_vm" {
+  name                 = "snet-vm"
+  resource_group_name  = azurerm_resource_group.network.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
+}
 
-##############################
+##########################################
+# Public IP for VM
+##########################################
+
+resource "azurerm_public_ip" "vm_ip" {
+  name                = "vm-public-ip"
+  resource_group_name = azurerm_resource_group.app.name
+  location            = var.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+##########################################
 # Network Interface for VM
-##############################
+##########################################
 
 resource "azurerm_network_interface" "nic" {
   name                = "nic-vm"
@@ -49,21 +90,21 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-##############################
-# Linux VM
-##############################
+##########################################
+# Linux VM (Ubuntu 22.04)
+##########################################
 
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-k3s"
-  location            = var.location
   resource_group_name = azurerm_resource_group.app.name
+  location            = var.location
   size                = "Standard_B1s"
+
+  admin_username = var.vm_admin
 
   network_interface_ids = [
     azurerm_network_interface.nic.id
   ]
-
-  admin_username = var.vm_admin
 
   admin_ssh_key {
     username   = var.vm_admin
@@ -84,9 +125,21 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 }
 
-##############################
-# Application Gateway v2 + WAF
-##############################
+##########################################
+# Public IP for Application Gateway
+##########################################
+
+resource "azurerm_public_ip" "appgw_ip" {
+  name                = "appgw-public-ip"
+  resource_group_name = azurerm_resource_group.appgw.name
+  location            = var.location
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+##########################################
+# Application Gateway (WAF_v2)
+##########################################
 
 resource "azurerm_application_gateway" "appgw" {
   name                = "appgw-k3s"
@@ -119,17 +172,21 @@ resource "azurerm_application_gateway" "appgw" {
     public_ip_address_id = azurerm_public_ip.appgw_ip.id
   }
 
+  ####################################
+  # Backend: VM Private IP (correct)
+  ####################################
   backend_address_pool {
     name         = "backendpool"
-    ip_addresses = [azurerm_public_ip.vm_ip.ip_address]
+    ip_addresses = [azurerm_network_interface.nic.private_ip_address]
   }
 
   backend_http_settings {
-    name          = "http-settings"
-    port          = 30080
-    protocol      = "Http"
-    request_timeout = 30
-    probe_name    = "k3s-probe"
+    name                  = "http-settings"
+    port                  = 30080
+    protocol              = "Http"
+    cookie_based_affinity = "Disabled"
+    request_timeout       = 30
+    probe_name            = "k3s-probe"
   }
 
   probe {
@@ -164,4 +221,8 @@ resource "azurerm_application_gateway" "appgw" {
     rule_set_type    = "OWASP"
     rule_set_version = "3.2"
   }
+
+  depends_on = [
+    azurerm_linux_virtual_machine.vm
+  ]
 }
