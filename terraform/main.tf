@@ -157,12 +157,12 @@ resource "azurerm_application_gateway" "appgw" {
   }
 
   backend_http_settings {
-    name                           = "http-settings"
-    cookie_based_affinity          = "Disabled"
-    port                           = 30080
-    protocol                       = "Http"
-    request_timeout                = 30
-    probe_name                     = "k3s-probe"
+    name                  = "http-settings"
+    cookie_based_affinity = "Disabled"
+    port                  = 30080
+    protocol              = "Http"
+    request_timeout       = 30
+    probe_name            = "k3s-probe"
   }
 
   probe {
