@@ -155,25 +155,25 @@ resource "azurerm_application_gateway" "appgw" {
 
   backend_address_pool {
     name         = "backendpool"
-    ip_addresses = [azurerm_network_interface.nic.private_ip_address]
+    ip_addresses = [azurerm_public_ip.vm_ip.ip_address]  # FIXED
   }
 
   backend_http_settings {
-    name                           = "http-settings"
-    cookie_based_affinity          = "Disabled"
-    port                           = 30080     # FIXED
-    protocol                       = "Http"
-    request_timeout                = 30
-    pick_host_name_from_backend_address = true
-    probe_name                     = "k3s-probe"
+    name                                = "http-settings"
+    cookie_based_affinity               = "Disabled"
+    port                                = 30080
+    protocol                            = "Http"
+    request_timeout                     = 30
+    pick_host_name_from_backend_http_settings = true
+    probe_name                          = "k3s-probe"
   }
 
   probe {
     name                = "k3s-probe"
     protocol            = "Http"
     path                = "/"
-    interval            = 30
     port                = 30080
+    interval            = 30
     timeout             = 30
     unhealthy_threshold = 3
   }
