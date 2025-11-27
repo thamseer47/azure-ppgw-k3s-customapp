@@ -1,7 +1,8 @@
-##############################
-# Resource Groups
-##############################
+#################################################
+# main.tf - clean Application Gateway + VM + VNet
+#################################################
 
+# ---------- Resource Groups ----------
 resource "azurerm_resource_group" "network" {
   name     = "rg-network"
   location = var.location
@@ -17,10 +18,7 @@ resource "azurerm_resource_group" "appgw" {
   location = var.location
 }
 
-##############################
-# Virtual Network + Subnets
-##############################
-
+# ---------- Virtual Network + Subnets ----------
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-app"
   location            = var.location
@@ -42,10 +40,7 @@ resource "azurerm_subnet" "subnet_vm" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-##############################
-# Public IP for VM
-##############################
-
+# ---------- Public IP for VM ----------
 resource "azurerm_public_ip" "vm_ip" {
   name                = "vm-public-ip"
   resource_group_name = azurerm_resource_group.app.name
@@ -54,10 +49,7 @@ resource "azurerm_public_ip" "vm_ip" {
   sku                 = "Standard"
 }
 
-##############################
-# Network Interface for VM
-##############################
-
+# ---------- Network Interface ----------
 resource "azurerm_network_interface" "nic" {
   name                = "nic-vm"
   location            = var.location
@@ -71,19 +63,18 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-##############################
-# Linux VM (Ubuntu + k3s capable)
-##############################
-
+# ---------- Linux VM (Ubuntu) ----------
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-k3s"
   location            = var.location
   resource_group_name = azurerm_resource_group.app.name
-  size                = "Standard_B1s"
-
-  network_interface_ids = [azurerm_network_interface.nic.id]
+  size                = var.vm_size
 
   admin_username = var.vm_admin
+
+  network_interface_ids = [
+    azurerm_network_interface.nic.id
+  ]
 
   admin_ssh_key {
     username   = var.vm_admin
@@ -102,12 +93,13 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
+  tags = {
+    project = "azure-appgw-k3s"
+  }
 }
 
-##############################
-# Public IP for Application Gateway
-##############################
-
+# ---------- Public IP for Application Gateway ----------
 resource "azurerm_public_ip" "appgw_ip" {
   name                = "appgw-public-ip"
   location            = var.location
@@ -116,10 +108,7 @@ resource "azurerm_public_ip" "appgw_ip" {
   sku                 = "Standard"
 }
 
-##############################
-# Application Gateway v2 + WAF
-##############################
-
+# ---------- Application Gateway v2 + WAF ----------
 resource "azurerm_application_gateway" "appgw" {
   name                = "appgw-k3s"
   location            = var.location
@@ -151,35 +140,28 @@ resource "azurerm_application_gateway" "appgw" {
     public_ip_address_id = azurerm_public_ip.appgw_ip.id
   }
 
+  # Backend pool — use VM private IP (preferred for internal routing)
   backend_address_pool {
     name         = "backendpool"
     ip_addresses = [azurerm_network_interface.nic.private_ip_address]
   }
+
+  # HTTP settings for backend
   backend_http_settings {
-<<<<<<< HEAD
     name                  = "http-settings"
     cookie_based_affinity = "Disabled"
     port                  = 30080
     protocol              = "Http"
     request_timeout       = 30
-    probe_name            = "k3s-probe"
-=======
-  name                           = "http-settings"
-  cookie_based_affinity          = "Disabled"
-  port                           = 30080
-  protocol                       = "Http"
-  request_timeout                = 30
 
-  # FIXED HOST HEADER
-  host = azurerm_public_ip.vm_ip.ip_address
+    # pick Host header from backend address (lets AGW set Host from IP)
+    # This value is supported in the provider - leave it 'true' when backend is IP.
+    pick_host_name_from_backend_address = true
 
-  probe_name                     = "k3s-probe"
-}
-
- 
->>>>>>> ebfa20782fd36a67b07a46edadf104d3aae240c7
+    probe_name = "k3s-probe"
   }
 
+  # Health probe
   probe {
     name                = "k3s-probe"
     protocol            = "Http"
@@ -217,4 +199,15 @@ resource "azurerm_application_gateway" "appgw" {
     azurerm_public_ip.appgw_ip,
     azurerm_linux_virtual_machine.vm
   ]
+}
+
+# ---------- Outputs ----------
+output "vm_public_ip" {
+  description = "Public IP of the VM (for SSH / demo only)"
+  value       = azurerm_public_ip.vm_ip.ip_address
+}
+
+output "appgw_public_ip" {
+  description = "Public IP of the Application Gateway"
+  value       = azurerm_public_ip.appgw_ip.ip_address
 }
