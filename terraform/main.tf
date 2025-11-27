@@ -1,7 +1,6 @@
 ##########################################
 # Provider
 ##########################################
-
 terraform {
   required_version = ">= 1.6"
 
@@ -16,6 +15,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
 
 ##########################################
 # Resource Groups
