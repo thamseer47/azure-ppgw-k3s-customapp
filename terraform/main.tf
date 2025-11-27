@@ -202,10 +202,6 @@ resource "azurerm_application_gateway" "appgw" {
 }
 
 # ---------- Outputs ----------
-output "vm_public_ip" {
-  description = "Public IP of the VM (for SSH / demo only)"
-  value       = azurerm_public_ip.vm_ip.ip_address
-}
 
 output "appgw_public_ip" {
   description = "Public IP of the Application Gateway"
