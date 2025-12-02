@@ -1,0 +1,17 @@
+# Terraform local directory
+.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+*.backup
+
+# Crash logs
+crash.log
+
+# Sensitive files
+*.pem
+*.key
+
+# Provider binaries (should never be committed)
+*.exe
