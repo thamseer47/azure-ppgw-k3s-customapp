@@ -183,7 +183,7 @@ resource "azurerm_application_gateway" "appgw" {
     interval            = 30
     timeout             = 30
     unhealthy_threshold = 3
-    host                = "127.0.0.1"   # FIX: Required for AGW v2
+    host                = "127.0.0.1" # FIX: Required for AGW v2
   }
 
   http_listener {
