@@ -38,8 +38,10 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      working-directory: ./terraform
+     env:
+        TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
       run: terraform plan
+
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
