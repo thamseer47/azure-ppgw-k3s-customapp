@@ -38,7 +38,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-     env:
+      env:
         TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
       run: terraform plan
 
@@ -46,5 +46,7 @@ jobs:
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       working-directory: ./terraform
+       env:
+        TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
       run: terraform apply -auto-approve
 
