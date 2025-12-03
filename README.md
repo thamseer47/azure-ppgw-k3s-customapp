@@ -13,7 +13,7 @@ The entire solution works fully on **Azure Free Trial**.
 
 ---
 
-# 🚀 Architecture Overview
+ Architecture Overview
 
 ```
 Client Browser
