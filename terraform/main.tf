@@ -1,110 +1,109 @@
-#############################################
-# Resource Groups
-#############################################
-
-resource "azurerm_resource_group" "network" {
-  name     = "rg-network"
-  location = var.location
+# Use an existing resource group
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
 }
 
-resource "azurerm_resource_group" "app" {
-  name     = "rg-app"
-  location = var.location
+locals {
+  vnet_name      = "${var.prefix}-vnet"
+  subnet_name    = "${var.prefix}-subnet"
+  nsg_name       = "${var.prefix}-nsg"
+  public_ip_name = "${var.prefix}-pip"
+  nic_name       = "${var.prefix}-nic"
+  vm_name        = "vm-${var.prefix}"
 }
-
-resource "azurerm_resource_group" "appgw" {
-  name     = "rg-appgw"
-  location = var.location
-}
-
-#############################################
-# Log Analytics Workspace (optional)
-#############################################
-
-resource "azurerm_log_analytics_workspace" "law" {
-  name                = "app-law"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.app.name
-  sku                 = "PerGB2018"
-  retention_in_days   = 30
-}
-
-#############################################
-# Virtual Network + Subnets
-#############################################
 
 resource "azurerm_virtual_network" "vnet" {
-  name                = "vnet-app"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.network.name
-  address_space       = ["10.0.0.0/16"]
+  name                = local.vnet_name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+  address_space       = [var.vnet_address_space]
 }
 
-resource "azurerm_subnet" "subnet_appgw" {
-  name                 = "snet-appgw"
-  resource_group_name  = azurerm_resource_group.network.name
+resource "azurerm_subnet" "subnet" {
+  name                 = local.subnet_name
+  resource_group_name  = data.azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = [var.subnet_prefix]
 }
 
-resource "azurerm_subnet" "subnet_vm" {
-  name                 = "snet-vm"
-  resource_group_name  = azurerm_resource_group.network.name
-  virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.2.0/24"]
+resource "azurerm_network_security_group" "nsg" {
+  name                = local.nsg_name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
+
+  security_rule {
+    name                       = "Allow-SSH"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  dynamic "security_rule" {
+    for_each = var.allowed_node_ports
+    content {
+      name                       = "Allow-NodePort-${security_rule.value}"
+      priority                   = 200 + security_rule.value % 1000
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = tostring(security_rule.value)
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    }
+  }
 }
 
-#############################################
-# VM Public IP
-#############################################
+# Associate NSG to subnet (if you prefer NIC-level association, change accordingly)
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
 
-resource "azurerm_public_ip" "vm_ip" {
-  name                = "vm-public-ip"
-  resource_group_name = azurerm_resource_group.app.name
-  location            = var.location
+resource "azurerm_public_ip" "pip" {
+  name                = local.public_ip_name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
   allocation_method   = "Static"
-  sku                 = "Standard"
+  sku                 = "Basic"
 }
-
-#############################################
-# NIC for VM
-#############################################
 
 resource "azurerm_network_interface" "nic" {
-  name                = "nic-vm"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.app.name
+  name                = local.nic_name
+  location            = data.azurerm_resource_group.rg.location
+  resource_group_name = data.azurerm_resource_group.rg.name
 
   ip_configuration {
-    name                          = "vm-ipconfig"
-    subnet_id                     = azurerm_subnet.subnet_vm.id
+    name                          = "ipconfig1"
+    subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.vm_ip.id
+    public_ip_address_id          = azurerm_public_ip.pip.id
+  }
+
+  tags = {
+    created_by = "terraform"
   }
 }
 
-#############################################
-# Linux VM (k3s)
-#############################################
-
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                = "vm-k3s"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.app.name
+  name                = local.vm_name
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
   size                = var.vm_size
-
-  network_interface_ids = [azurerm_network_interface.nic.id]
-  admin_username        = var.vm_admin
-
-  admin_ssh_key {
-    username   = var.vm_admin
-    public_key = file(var.ssh_key_path)
-  }
+  admin_username      = var.admin_username
+  network_interface_ids = [
+    azurerm_network_interface.nic.id
+  ]
 
   os_disk {
-    name                 = "osdisk-k3s"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
+    disk_size_gb         = 30
   }
 
   source_image_reference {
@@ -113,111 +112,15 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "22_04-lts"
     version   = "latest"
   }
-}
 
-#############################################
-# App Gateway Public IP
-#############################################
+  disable_password_authentication = true
 
-resource "azurerm_public_ip" "appgw_ip" {
-  name                = "appgw-public-ip"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.appgw.name
-  allocation_method   = "Static"
-  sku                 = "Standard"
-}
-
-#############################################
-# Application Gateway (Corrected!)
-#############################################
-
-resource "azurerm_application_gateway" "appgw" {
-  name                = "appgw-k3s"
-  location            = var.location
-  resource_group_name = azurerm_resource_group.appgw.name
-
-  sku {
-    name     = "WAF_v2"
-    tier     = "WAF_v2"
-    capacity = 1
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = var.ssh_public_key
   }
 
-  gateway_ip_configuration {
-    name      = "appgw-ipconfig"
-    subnet_id = azurerm_subnet.subnet_appgw.id
+  tags = {
+    created_by = "terraform"
   }
-
-  frontend_port {
-    name = "port80"
-    port = 80
-  }
-
-  frontend_ip_configuration {
-    name                 = "frontend"
-    public_ip_address_id = azurerm_public_ip.appgw_ip.id
-  }
-
-  backend_address_pool {
-    name         = "backendpool"
-    ip_addresses = [azurerm_network_interface.nic.private_ip_address]
-  }
-
-  backend_http_settings {
-    name                  = "http-settings"
-    port                  = 30080
-    protocol              = "Http"
-    request_timeout       = 30
-    cookie_based_affinity = "Disabled"
-
-    # FIXED: Correct flag
-    pick_host_name_from_backend_address = true
-
-    probe_name = "k3s-probe"
-  }
-
-  probe {
-    name                = "k3s-probe"
-    protocol            = "Http"
-    path                = "/"
-    port                = 30080
-    interval            = 30
-    timeout             = 30
-    unhealthy_threshold = 3
-    host                = "127.0.0.1" # FIX: Required for AGW v2
-  }
-
-  http_listener {
-    name                           = "listener"
-    frontend_ip_configuration_name = "frontend"
-    frontend_port_name             = "port80"
-    protocol                       = "Http"
-  }
-
-  request_routing_rule {
-    name                       = "rule1"
-    rule_type                  = "Basic"
-    http_listener_name         = "listener"
-    backend_address_pool_name  = "backendpool"
-    backend_http_settings_name = "http-settings"
-    priority                   = 1
-  }
-
-  waf_configuration {
-    enabled          = true
-    firewall_mode    = "Detection"
-    rule_set_type    = "OWASP"
-    rule_set_version = "3.2"
-  }
-}
-
-#############################################
-# Outputs
-#############################################
-
-output "vm_public_ip" {
-  value = azurerm_public_ip.vm_ip.ip_address
-}
-
-output "appgw_public_ip" {
-  value = azurerm_public_ip.appgw_ip.ip_address
 }
