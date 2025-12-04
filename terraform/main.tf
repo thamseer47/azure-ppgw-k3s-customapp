@@ -1,3 +1,4 @@
+# terraform/main.tf
 # Use an existing resource group
 data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
@@ -57,6 +58,12 @@ resource "azurerm_network_security_group" "nsg" {
       destination_address_prefix = "*"
     }
   }
+}
+
+# association: explicit resource so Terraform can manage the NSG <> Subnet link
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "azurerm_public_ip" "pip" {
