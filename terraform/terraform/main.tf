@@ -59,12 +59,18 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
+# Associate NSG to subnet (if you prefer NIC-level association, change accordingly)
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
 resource "azurerm_public_ip" "pip" {
   name                = local.public_ip_name
   location            = data.azurerm_resource_group.rg.location
   resource_group_name = data.azurerm_resource_group.rg.name
   allocation_method   = "Static"
-  sku                 = "Standard"
+  sku                 = "Basic"
 }
 
 resource "azurerm_network_interface" "nic" {
@@ -90,7 +96,6 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location            = data.azurerm_resource_group.rg.location
   size                = var.vm_size
   admin_username      = var.admin_username
-
   network_interface_ids = [
     azurerm_network_interface.nic.id
   ]
