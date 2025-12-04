@@ -1,0 +1,410 @@
+{
+  "version": 4,
+  "terraform_version": "1.13.5",
+  "serial": 93,
+  "lineage": "55df686c-6a14-79d6-1592-7d10a42b87d0",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "data",
+      "type": "azurerm_resource_group",
+      "name": "rg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app",
+            "location": "centralindia",
+            "managed_by": "",
+            "name": "rg-app",
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_linux_virtual_machine",
+      "name": "vm",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "additional_capabilities": [],
+            "admin_password": null,
+            "admin_ssh_key": [
+              {
+                "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNEa0LDSEv6PH1fGsnYpeg3gIy+/ZBCdsrqhHo6l/nBFTsNEqhS6VMuV1cSr/R4XFSsRRRm+mpGzYSIqSOC7DMnjGtQolD5BCIZnC5Naz3n8GggW/7kDTPLBCFQ0VAUcM2+OhglhqJadA13WEmhjmjBsPuicvPMEpcFygQKYDsXWRbv20tPFDJn2YUe+ZCZv5hFRhWDYKWHd2gseVXDP3WcxQ77IBdw9V6pPolc/IE44YR8RiRjK7f9lV2q8FWskuKW8f39LLPPe7lFS6QQbvwTf0CWBjQBZtnbIpCcPHBzJtuG58fLg4rGGTQVb365j76H5MNrY+VRbG7MITQhh20K9qJz/OhWdeZnYRwR9xm7o+QcEeQ40Qb+8B6N5aGRZDWE4/5xTW5/R/xk/Wkn9DNVuf+VXY3NwOB+ausW+oaUsyuQBDGxHqEztJfbY2V+t/VY3QdQTHkFmtfOHg4kq4BlXwS4LLHtyuWGX6s95KfL1/tR5dKpVEu0VifdeYO7B9cNgJ1gP7AM45Kjw5VkJY41qYGCY4BbooAOVfe11hZxClCISBJ7qtqZ/BD11sR+6WIhtRyjHDeSzefjHg4cahgjAN0XJnXgDuUWxyJUqX+MD7RjpRl0oCS548Vy84ZrjkPnfwn0allpQVXVtPsbTesdXJFL+KMcxNlas8Pb0bfiw== thams@THAMSEER_47\r\n",
+                "username": "azureuser"
+              }
+            ],
+            "admin_username": "azureuser",
+            "allow_extension_operations": true,
+            "availability_set_id": "",
+            "boot_diagnostics": [],
+            "bypass_platform_safety_checks_on_user_schedule_enabled": false,
+            "capacity_reservation_group_id": "",
+            "computer_name": "vm-k3s",
+            "custom_data": null,
+            "dedicated_host_group_id": "",
+            "dedicated_host_id": "",
+            "disable_password_authentication": true,
+            "disk_controller_type": "",
+            "edge_zone": "",
+            "encryption_at_host_enabled": false,
+            "eviction_policy": "",
+            "extensions_time_budget": "PT1H30M",
+            "gallery_application": [],
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Compute/virtualMachines/vm-k3s",
+            "identity": [],
+            "license_type": "",
+            "location": "centralindia",
+            "max_bid_price": -1,
+            "name": "vm-k3s",
+            "network_interface_ids": [
+              "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/networkInterfaces/k3s-nic"
+            ],
+            "os_disk": [
+              {
+                "caching": "ReadWrite",
+                "diff_disk_settings": [],
+                "disk_encryption_set_id": "",
+                "disk_size_gb": 30,
+                "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Compute/disks/osdisk-k3s",
+                "name": "osdisk-k3s",
+                "secure_vm_disk_encryption_set_id": "",
+                "security_encryption_type": "",
+                "storage_account_type": "Standard_LRS",
+                "write_accelerator_enabled": false
+              }
+            ],
+            "os_image_notification": [],
+            "os_managed_disk_id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Compute/disks/osdisk-k3s",
+            "patch_assessment_mode": "ImageDefault",
+            "patch_mode": "ImageDefault",
+            "plan": [],
+            "platform_fault_domain": -1,
+            "priority": "Regular",
+            "private_ip_address": "10.0.2.4",
+            "private_ip_addresses": [
+              "10.0.2.4"
+            ],
+            "provision_vm_agent": true,
+            "proximity_placement_group_id": "",
+            "public_ip_address": "74.225.184.117",
+            "public_ip_addresses": [
+              "74.225.184.117"
+            ],
+            "reboot_setting": "",
+            "resource_group_name": "rg-app",
+            "secret": [],
+            "secure_boot_enabled": false,
+            "size": "Standard_B2ms",
+            "source_image_id": "",
+            "source_image_reference": [
+              {
+                "offer": "0001-com-ubuntu-server-jammy",
+                "publisher": "Canonical",
+                "sku": "22_04-lts",
+                "version": "latest"
+              }
+            ],
+            "tags": {
+              "created_by": "terraform"
+            },
+            "termination_notification": [],
+            "timeouts": null,
+            "user_data": "",
+            "virtual_machine_id": "d69b8762-2bb7-4d54-a74e-a0d2f6809574",
+            "virtual_machine_scale_set_id": "",
+            "vm_agent_platform_updates_enabled": false,
+            "vtpm_enabled": false,
+            "zone": ""
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "admin_password"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "custom_data"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoyNzAwMDAwMDAwMDAwLCJkZWxldGUiOjI3MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoyNzAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "azurerm_network_interface.nic",
+            "azurerm_public_ip.pip",
+            "azurerm_subnet.subnet",
+            "azurerm_virtual_network.vnet",
+            "data.azurerm_resource_group.rg"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_network_interface",
+      "name": "nic",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "accelerated_networking_enabled": false,
+            "applied_dns_servers": [],
+            "auxiliary_mode": "",
+            "auxiliary_sku": "",
+            "dns_servers": [],
+            "edge_zone": "",
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/networkInterfaces/k3s-nic",
+            "internal_dns_name_label": "",
+            "internal_domain_name_suffix": "4uiskf0c1r1e1baw5jxfyxysma.rx.internal.cloudapp.net",
+            "ip_configuration": [
+              {
+                "gateway_load_balancer_frontend_ip_configuration_id": "",
+                "name": "ipconfig1",
+                "primary": true,
+                "private_ip_address": "10.0.1.4",
+                "private_ip_address_allocation": "Dynamic",
+                "private_ip_address_version": "IPv4",
+                "public_ip_address_id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/publicIPAddresses/k3s-pip",
+                "subnet_id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/virtualNetworks/k3s-vnet/subnets/k3s-subnet"
+              }
+            ],
+            "ip_forwarding_enabled": false,
+            "location": "centralindia",
+            "mac_address": "",
+            "name": "k3s-nic",
+            "private_ip_address": "10.0.1.4",
+            "private_ip_addresses": [
+              "10.0.1.4"
+            ],
+            "resource_group_name": "rg-app",
+            "tags": {
+              "created_by": "terraform"
+            },
+            "timeouts": null,
+            "virtual_machine_id": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "k3s-nic",
+            "resource_group_name": "rg-app",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_network_security_group",
+      "name": "nsg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/networkSecurityGroups/k3s-nsg",
+            "location": "centralindia",
+            "name": "k3s-nsg",
+            "resource_group_name": "rg-app",
+            "security_rule": [
+              {
+                "access": "Allow",
+                "description": "",
+                "destination_address_prefix": "*",
+                "destination_address_prefixes": [],
+                "destination_application_security_group_ids": [],
+                "destination_port_range": "22",
+                "destination_port_ranges": [],
+                "direction": "Inbound",
+                "name": "Allow-SSH",
+                "priority": 100,
+                "protocol": "Tcp",
+                "source_address_prefix": "*",
+                "source_address_prefixes": [],
+                "source_application_security_group_ids": [],
+                "source_port_range": "*",
+                "source_port_ranges": []
+              },
+              {
+                "access": "Allow",
+                "description": "",
+                "destination_address_prefix": "*",
+                "destination_address_prefixes": [],
+                "destination_application_security_group_ids": [],
+                "destination_port_range": "32302",
+                "destination_port_ranges": [],
+                "direction": "Inbound",
+                "name": "Allow-NodePort-32302",
+                "priority": 502,
+                "protocol": "Tcp",
+                "source_address_prefix": "*",
+                "source_address_prefixes": [],
+                "source_application_security_group_ids": [],
+                "source_port_range": "*",
+                "source_port_ranges": []
+              }
+            ],
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "k3s-nsg",
+            "resource_group_name": "rg-app",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_public_ip",
+      "name": "pip",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allocation_method": "Static",
+            "ddos_protection_mode": "VirtualNetworkInherited",
+            "ddos_protection_plan_id": null,
+            "domain_name_label": null,
+            "domain_name_label_scope": null,
+            "edge_zone": "",
+            "fqdn": null,
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/publicIPAddresses/k3s-pip",
+            "idle_timeout_in_minutes": 4,
+            "ip_address": "98.70.101.248",
+            "ip_tags": {},
+            "ip_version": "IPv4",
+            "location": "centralindia",
+            "name": "k3s-pip",
+            "public_ip_prefix_id": null,
+            "resource_group_name": "rg-app",
+            "reverse_fqdn": null,
+            "sku": "Standard",
+            "sku_tier": "Regional",
+            "tags": {},
+            "timeouts": null,
+            "zones": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "subnet",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address_prefixes": [
+              "10.0.1.0/24"
+            ],
+            "default_outbound_access_enabled": true,
+            "delegation": [],
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/virtualNetworks/k3s-vnet/subnets/k3s-subnet",
+            "ip_address_pool": [],
+            "name": "k3s-subnet",
+            "private_endpoint_network_policies": "Disabled",
+            "private_link_service_network_policies_enabled": true,
+            "resource_group_name": "rg-app",
+            "service_endpoint_policy_ids": [],
+            "service_endpoints": [],
+            "sharing_scope": "",
+            "timeouts": null,
+            "virtual_network_name": "k3s-vnet"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "k3s-subnet",
+            "resource_group_name": "rg-app",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59",
+            "virtual_network_name": "k3s-vnet"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_virtual_network",
+      "name": "vnet",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address_space": [
+              "10.0.0.0/16"
+            ],
+            "bgp_community": "",
+            "ddos_protection_plan": [],
+            "dns_servers": [],
+            "edge_zone": "",
+            "encryption": [],
+            "flow_timeout_in_minutes": 0,
+            "guid": "172511f5-dc42-4d76-8416-fa6e5c5f1260",
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/virtualNetworks/k3s-vnet",
+            "ip_address_pool": [],
+            "location": "centralindia",
+            "name": "k3s-vnet",
+            "private_endpoint_vnet_policies": "Disabled",
+            "resource_group_name": "rg-app",
+            "subnet": [
+              {
+                "address_prefixes": [
+                  "10.0.1.0/24"
+                ],
+                "default_outbound_access_enabled": true,
+                "delegation": [],
+                "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/virtualNetworks/k3s-vnet/subnets/k3s-subnet",
+                "name": "k3s-subnet",
+                "private_endpoint_network_policies": "Disabled",
+                "private_link_service_network_policies_enabled": true,
+                "route_table_id": "",
+                "security_group": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app/providers/Microsoft.Network/networkSecurityGroups/k3s-nsg",
+                "service_endpoint_policy_ids": [],
+                "service_endpoints": []
+              }
+            ],
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "k3s-vnet",
+            "resource_group_name": "rg-app",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

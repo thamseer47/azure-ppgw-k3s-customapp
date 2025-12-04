@@ -1,0 +1,222 @@
+{
+  "version": 4,
+  "terraform_version": "1.13.5",
+  "serial": 27,
+  "lineage": "55df686c-6a14-79d6-1592-7d10a42b87d0",
+  "outputs": {
+    "appgw_public_ip": {
+      "value": "135.235.174.55",
+      "type": "string"
+    },
+    "vm_public_ip": {
+      "value": "172.202.34.175",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "azurerm_public_ip",
+      "name": "appgw_ip",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allocation_method": "Static",
+            "ddos_protection_mode": "VirtualNetworkInherited",
+            "ddos_protection_plan_id": null,
+            "domain_name_label": null,
+            "domain_name_label_scope": null,
+            "edge_zone": "",
+            "fqdn": null,
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-appgw/providers/Microsoft.Network/publicIPAddresses/appgw-public-ip",
+            "idle_timeout_in_minutes": 4,
+            "ip_address": "135.235.174.55",
+            "ip_tags": null,
+            "ip_version": "IPv4",
+            "location": "centralindia",
+            "name": "appgw-public-ip",
+            "public_ip_prefix_id": null,
+            "resource_group_name": "rg-appgw",
+            "reverse_fqdn": null,
+            "sku": "Standard",
+            "sku_tier": "Regional",
+            "tags": null,
+            "timeouts": null,
+            "zones": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "azurerm_resource_group.appgw"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "app",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-app",
+            "location": "centralus",
+            "managed_by": "",
+            "name": "rg-app",
+            "tags": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "rg-app",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjo1NDAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "appgw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-appgw",
+            "location": "centralindia",
+            "managed_by": "",
+            "name": "rg-appgw",
+            "tags": null,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "rg-appgw",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjo1NDAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_resource_group",
+      "name": "network",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-network",
+            "location": "centralindia",
+            "managed_by": "",
+            "name": "rg-network",
+            "tags": null,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "rg-network",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjo1NDAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "subnet_appgw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address_prefixes": [
+              "10.0.1.0/24"
+            ],
+            "default_outbound_access_enabled": true,
+            "delegation": [],
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-app/subnets/snet-appgw",
+            "ip_address_pool": [],
+            "name": "snet-appgw",
+            "private_endpoint_network_policies": "Enabled",
+            "private_link_service_network_policies_enabled": true,
+            "resource_group_name": "rg-network",
+            "service_endpoint_policy_ids": [],
+            "service_endpoints": [],
+            "sharing_scope": "",
+            "timeouts": null,
+            "virtual_network_name": "vnet-app"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "snet-appgw",
+            "resource_group_name": "rg-network",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59",
+            "virtual_network_name": "vnet-app"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0=",
+          "dependencies": [
+            "azurerm_resource_group.network",
+            "azurerm_virtual_network.vnet"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "azurerm_subnet",
+      "name": "subnet_vm",
+      "provider": "provider[\"registry.terraform.io/hashicorp/azurerm\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address_prefixes": [
+              "10.0.2.0/24"
+            ],
+            "default_outbound_access_enabled": true,
+            "delegation": [],
+            "id": "/subscriptions/bff7c565-ed2e-48c9-bd8d-9285d45dca59/resourceGroups/rg-network/providers/Microsoft.Network/virtualNetworks/vnet-app/subnets/snet-vm",
+            "ip_address_pool": [],
+            "name": "snet-vm",
+            "private_endpoint_network_policies": "Enabled",
+            "private_link_service_network_policies_enabled": true,
+            "resource_group_name": "rg-network",
+            "service_endpoint_policy_ids": [],
+            "service_endpoints": [],
+            "sharing_scope": "",
+            "timeouts": null,
+            "virtual_network_name": "vnet-app"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "name": "snet-vm",
+            "resource_group_name": "rg-network",
+            "subscription_id": "bff7c565-ed2e-48c9-bd8d-9285d45dca59",
+            "virtual_network_name": "vnet-app"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInJlYWQiOjMwMDAwMDAwMDAwMCwidXBkYXRlIjoxODAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIwIn0=",
+          "dependencies": [
+            "azurerm_resource_group.network",
+            "azurerm_virtual_network.vnet"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
