@@ -35,7 +35,7 @@ Custom HTML Web App
 
 ---
 
-# 📂 Repository Structure
+ Repository Structure
 
 ```
 k8s/               → Kubernetes manifests
