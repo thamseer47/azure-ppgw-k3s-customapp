@@ -1,4 +1,4 @@
-🌐 Azure Application Gateway + WAF + k3s Kubernetes + Custom Web App  
+ Azure Application Gateway + WAF + k3s Kubernetes + Custom Web App  
 This project demonstrates a complete cloud-native application deployment using:
 
 - Azure Virtual Networks  
