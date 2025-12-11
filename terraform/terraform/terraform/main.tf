@@ -1,9 +1,13 @@
-# terraform/main.tf
-# Use an existing resource group
+############################################################
+#  Use Existing Resource Group
+############################################################
 data "azurerm_resource_group" "rg" {
   name = var.resource_group_name
 }
 
+############################################################
+#  Local Names
+############################################################
 locals {
   vnet_name      = "${var.prefix}-vnet"
   subnet_name    = "${var.prefix}-subnet"
@@ -13,6 +17,9 @@ locals {
   vm_name        = "vm-${var.prefix}"
 }
 
+############################################################
+#  Virtual Network
+############################################################
 resource "azurerm_virtual_network" "vnet" {
   name                = local.vnet_name
   location            = data.azurerm_resource_group.rg.location
@@ -20,6 +27,9 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = [var.vnet_address_space]
 }
 
+############################################################
+#  Subnet
+############################################################
 resource "azurerm_subnet" "subnet" {
   name                 = local.subnet_name
   resource_group_name  = data.azurerm_resource_group.rg.name
@@ -27,6 +37,9 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = [var.subnet_prefix]
 }
 
+############################################################
+#  Network Security Group
+############################################################
 resource "azurerm_network_security_group" "nsg" {
   name                = local.nsg_name
   location            = data.azurerm_resource_group.rg.location
@@ -60,12 +73,17 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-# association: explicit resource so Terraform can manage the NSG <> Subnet link
+############################################################
+#  NSG ↔ Subnet Association  (Required)
+############################################################
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
+############################################################
+#  Public IP
+############################################################
 resource "azurerm_public_ip" "pip" {
   name                = local.public_ip_name
   location            = data.azurerm_resource_group.rg.location
@@ -73,11 +91,10 @@ resource "azurerm_public_ip" "pip" {
   allocation_method   = "Static"
   sku                 = "Standard"
 }
-resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
-  subnet_id                 = azurerm_subnet.subnet.id
-  network_security_group_id = azurerm_network_security_group.nsg.id
-}
 
+############################################################
+#  Network Interface
+############################################################
 resource "azurerm_network_interface" "nic" {
   name                = local.nic_name
   location            = data.azurerm_resource_group.rg.location
@@ -95,6 +112,9 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+############################################################
+#  Virtual Machine
+############################################################
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = local.vm_name
   resource_group_name = data.azurerm_resource_group.rg.name
@@ -129,4 +149,11 @@ resource "azurerm_linux_virtual_machine" "vm" {
   tags = {
     created_by = "terraform"
   }
+}
+############################################################
+#  NSG ↔ Subnet Association  (Required for Terraform import)
+############################################################
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }

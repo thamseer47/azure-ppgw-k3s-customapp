@@ -15,7 +15,7 @@ The entire solution works fully on **Azure Free Trial**
 
  Architecture Overview
 
-``
+```
 Client Browser
      ↓
 Azure Application Gateway (Public IP)

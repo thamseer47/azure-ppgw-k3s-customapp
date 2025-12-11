@@ -1,5 +1,17 @@
+# Terraform
+*.tfstate
+*.tfstate.*
 .terraform/
 .terraform.lock.hcl
-*.tfstate
-*.tfstate.backup
+
+# Local overrides
+terraform.tfvars
+*.backup
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
 

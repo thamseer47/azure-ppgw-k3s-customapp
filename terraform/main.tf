@@ -59,6 +59,14 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
+############################################################
+#  NSG ↔ Subnet Association (REQUIRED)
+############################################################
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg" {
+  subnet_id                 = azurerm_subnet.subnet.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
+}
+
 resource "azurerm_public_ip" "pip" {
   name                = local.public_ip_name
   location            = data.azurerm_resource_group.rg.location
@@ -119,3 +127,4 @@ resource "azurerm_linux_virtual_machine" "vm" {
     created_by = "terraform"
   }
 }
+
